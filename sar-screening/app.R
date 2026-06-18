@@ -80,10 +80,11 @@ if (!file.exists(cache_file)) {
 }
 
 occs <- readRDS(cache_file)
-
 status_levels <- c("Endangered", "Threatened", "Special Concern")
-status_pal <- colorFactor(c("#D55E00", "#E69F00", "#009E73"),  # Okabe-Ito (colourblind-safe)
-                          levels = status_levels)
+# Status palette — switch by un/commenting one line (Okabe-Ito active):
+status_pal <- colorFactor(c("#D55E00", "#E69F00", "#009E73"), levels = status_levels)  # Okabe-Ito (colourblind-safe)
+# status_pal <- colorFactor(c("#a4133c", "#64748b", "#94a3b8"), levels = status_levels)  # Crimson + slate
+# status_pal <- colorFactor(c("#6d28d9", "#0d9488", "#6b8f71"), levels = status_levels)  # Cool, no red
 
 # ── UI ─────────────────────────────────────────────────────────────────────────
 ui <- page_sidebar(

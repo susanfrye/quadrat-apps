@@ -76,9 +76,11 @@ if (!file.exists(cache_file)) {
 }
 
 bees <- readRDS(cache_file)
-
 status_levels <- c("Endangered", "Special Concern", "Secure")
+# Status palette — switch by un/commenting one line (Okabe-Ito active):
 status_pal <- colorFactor(c("#D55E00", "#E69F00", "#009E73"), levels = status_levels)  # Okabe-Ito (colourblind-safe)
+# status_pal <- colorFactor(c("#a4133c", "#64748b", "#94a3b8"), levels = status_levels)  # Crimson + slate
+# status_pal <- colorFactor(c("#6d28d9", "#0d9488", "#6b8f71"), levels = status_levels)  # Cool, no red
 sp_choices <- bee_meta$common
 
 # ── UI ─────────────────────────────────────────────────────────────────────────
@@ -146,14 +148,14 @@ server <- function(input, output, session) {
 
   observe({
     d <- dat()
-    m <- leafletProxy("map") |> clearMarkers() |> clearHeatmap() |> clearControls()
+    m <- leafletProxy("map") |> clearGroup("pts") |> clearControls()
     if (nrow(d) == 0) return(m)
     if (isTRUE(input$heat)) {
-      m |> addHeatmap(data = d, lng = ~lon, lat = ~lat,
+      m |> addHeatmap(data = d, lng = ~lon, lat = ~lat, group = "pts",
                       blur = 20, max = 0.6, radius = 12)
     } else {
       m |>
-        addCircleMarkers(data = d, lng = ~lon, lat = ~lat,
+        addCircleMarkers(data = d, lng = ~lon, lat = ~lat, group = "pts",
                          radius = 4, stroke = FALSE, fillOpacity = 0.7,
                          color = ~status_pal(status),
                          popup = ~paste0("<b>", common, "</b><br>", status,
