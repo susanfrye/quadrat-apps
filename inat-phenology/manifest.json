@@ -1299,34 +1299,6 @@
         "Built": "R 4.6.0; ; 2026-04-26 16:02:09 UTC; unix"
       }
     },
-    "leaflet.extras": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
-      "description": {
-        "Package": "leaflet.extras",
-        "Type": "Package",
-        "Title": "Extra Functionality for 'leaflet' Package",
-        "Version": "2.0.2",
-        "Authors@R": "c(\n      person(\"Sebastian\", \"Gatscha\", email = \"sebastian_gatscha@gmx.at\", role = c(\"aut\")),\n      person(\"Sebastien\", \"Plutniak\", email = \"sebastien.plutniak@posteo.net\", role = c(\"cre\"), comment = \"Package maintainance\"),\n      person(\"Bhaskar\", \"Karambelkar\", email = \"bhaskarvk@gmail.com\", role = c(\"aut\")),\n      person(\"Barret\", \"Schloerke\", email = \"barret@rstudio.com\", role = c(\"aut\")),\n      person(\"Bangyou\", \"Zheng\", email= \"Bangyou.Zheng@csiro.au\", role = c(\"ctb\"), comment = \"Leaflet-search and Leaflet-GPS plugin integration\"),\n      person(\"Robin\", \"Cura\", email= \"robin@cura.info\", role = c(\"ctb\"), comment = \"Fixes for Draw Options\"),\n      person(\"Markus\", \"Voge\", email= \"markus.voge@ea-aw.de\", role = c(\"ctb\"), comment = \"Enhancements for Draw Options\"),\n      person(\"Markus\", \"Dumke\", role = c(\"ctb\"), comment = \"Bounce Marker addition\"),\n      person(family = \"Mapbox\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-omnivore, csv2geojson, and togeojson libraries\"),\n      person(\"Henry\", \"Thasler\", role = c(\"ctb\", \"cph\"), comment = \"Leaflet.Geodesic library\"),\n      person(\"Dennis\", \"Wilhelm\", role = c(\"ctb\", \"cph\"), comment = \"Leaflet.StyleEditor library\"),\n      person(\"Kirollos\", \"Risk\", role = c(\"ctb\", \"cph\"), comment = \"fuse.js library\"),\n      person(\"Tim\", \"Wisniewski\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-choropleth library\"),\n      person(family = \"Leaflet\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-draw library\"),\n      person(\"Alexander\", \"Milevski\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-draw-drag library\"),\n      person(\"John\", \"Firebaugh\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-fullscreen library\"),\n      person(\"Stefano\", \"Cudini\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-gps library\"),\n      person(\"Johannes\", \"Rudolph\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-hash library\"),\n      person(\"Per\", \"Liedman\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-measure-path library\"),\n      person(\"Pavel\", \"Shramov\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-plugins library\"),\n      person(\"Filip\", \"Zavadil\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-pulse-icon library\"),\n      person(\"Stefano\", \"Cudini\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-search library\"),\n      person(family = \"CliffCloud\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-sleep library\"),\n      person(family = \"Ursudio\", role = c(\"ctb\", \"cph\"), comment = \"leaflet-webgl-heatmap library\"),\n      person(\"Maxime\", \"Hadjinlian\", role = c(\"ctb\", \"cph\"), comment = \"leaflet.BounceMarker library\"),\n      person(\"Vladimir\", \"Agafonkin\", role = c(\"ctb\", \"cph\"), comment = \"leaflet.heat library\"),\n      person(\"Iván Sánchez\", \"Ortega\", role = c(\"ctb\", \"cph\"), comment = \"leaflet.tilelayer.pouchdbcached library\"),\n      person(\"Dale\", \"Harvey\", role = c(\"ctb\", \"cph\"), comment = \"pouchdb-browser library\"),\n      person(\"Mike\", \"Bostock\", role = c(\"ctb\", \"cph\"), comment = \"topojson library\")\n    )",
-        "Description": "The 'leaflet' JavaScript library provides many plugins some of which\n    are available in the core 'leaflet' package, but there are many more. It is not\n    possible to support them all in the core 'leaflet' package. This package serves\n    as an add-on to the 'leaflet' package by providing extra functionality via 'leaflet'\n    plugins.",
-        "License": "GPL-3 | file LICENSE",
-        "Encoding": "UTF-8",
-        "Depends": "R (>= 3.1.0), leaflet (>= 2.0.0)",
-        "Imports": "htmlwidgets, htmltools, stringr, magrittr",
-        "Suggests": "jsonlite, readr, sf, xfun, testthat (>= 3.0.0)",
-        "URL": "https://github.com/sebastien-plutniak/leaflet.extras",
-        "BugReports": "https://github.com/sebastien-plutniak/leaflet.extras/issues",
-        "RoxygenNote": "7.3.3",
-        "Config/testthat/edition": "3",
-        "NeedsCompilation": "no",
-        "Packaged": "2026-03-28 23:44:49 UTC; seb",
-        "Author": "Sebastian Gatscha [aut],\n  Sebastien Plutniak [cre] (Package maintainance),\n  Bhaskar Karambelkar [aut],\n  Barret Schloerke [aut],\n  Bangyou Zheng [ctb] (Leaflet-search and Leaflet-GPS plugin integration),\n  Robin Cura [ctb] (Fixes for Draw Options),\n  Markus Voge [ctb] (Enhancements for Draw Options),\n  Markus Dumke [ctb] (Bounce Marker addition),\n  Mapbox [ctb, cph] (leaflet-omnivore, csv2geojson, and togeojson\n    libraries),\n  Henry Thasler [ctb, cph] (Leaflet.Geodesic library),\n  Dennis Wilhelm [ctb, cph] (Leaflet.StyleEditor library),\n  Kirollos Risk [ctb, cph] (fuse.js library),\n  Tim Wisniewski [ctb, cph] (leaflet-choropleth library),\n  Leaflet [ctb, cph] (leaflet-draw library),\n  Alexander Milevski [ctb, cph] (leaflet-draw-drag library),\n  John Firebaugh [ctb, cph] (leaflet-fullscreen library),\n  Stefano Cudini [ctb, cph] (leaflet-gps library),\n  Johannes Rudolph [ctb, cph] (leaflet-hash library),\n  Per Liedman [ctb, cph] (leaflet-measure-path library),\n  Pavel Shramov [ctb, cph] (leaflet-plugins library),\n  Filip Zavadil [ctb, cph] (leaflet-pulse-icon library),\n  Stefano Cudini [ctb, cph] (leaflet-search library),\n  CliffCloud [ctb, cph] (leaflet-sleep library),\n  Ursudio [ctb, cph] (leaflet-webgl-heatmap library),\n  Maxime Hadjinlian [ctb, cph] (leaflet.BounceMarker library),\n  Vladimir Agafonkin [ctb, cph] (leaflet.heat library),\n  Iván Sánchez Ortega [ctb, cph] (leaflet.tilelayer.pouchdbcached\n    library),\n  Dale Harvey [ctb, cph] (pouchdb-browser library),\n  Mike Bostock [ctb, cph] (topojson library)",
-        "Maintainer": "Sebastien Plutniak <sebastien.plutniak@posteo.net>",
-        "Repository": "CRAN",
-        "Date/Publication": "2026-03-29 15:50:08 UTC",
-        "Built": "R 4.6.0; ; 2026-04-26 19:23:20 UTC; unix"
-      }
-    },
     "leaflet.providers": {
       "Source": "CRAN",
       "Repository": "https://cloud.r-project.org",
@@ -2731,10 +2703,10 @@
   },
   "files": {
     "app.R": {
-      "checksum": "69c3c374d850555e2e72c7501e51e7ce"
+      "checksum": "f929d5612b44eacc204e6a97cef7b85f"
     },
     "cache_inat_ontario.rds": {
-      "checksum": "b9f0c29b167a9236b50276ebdb2daf9f"
+      "checksum": "83cf6929c159e184f112d472b59bc762"
     }
   },
   "users": null

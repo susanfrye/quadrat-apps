@@ -3,8 +3,8 @@
 # Real data via the rinat package (iNaturalist public API)
 #
 # SETUP (run once in the console before launching the app):
-#   install.packages(c("shiny","bslib","leaflet","leaflet.extras",
-#                      "plotly","rinat","dplyr","ggplot2","lubridate"))
+#   install.packages(c("shiny","bslib","leaflet","plotly","rinat",
+#                      "dplyr","ggplot2","lubridate"))
 #
 # Data is downloaded on first run and cached as cache_inat_ontario.rds (~5 MB)
 # Downloads research-grade observations from Ontario for 4 taxa groups.
@@ -14,7 +14,6 @@
 library(shiny)
 library(bslib)
 library(leaflet)
-library(leaflet.extras)
 library(plotly)
 library(rinat)
 library(dplyr)
@@ -146,7 +145,7 @@ ui <- page_sidebar(
     col_widths = c(6, 6),
     card(
       full_screen = TRUE,
-      card_header("Observation Density Map"),
+      card_header("Observations by Taxa"),
       leafletOutput("hotspot_map", height = 380)
     ),
     card(
@@ -169,7 +168,7 @@ server <- function(input, output, session) {
   output$month_label <- renderUI({
     m1 <- month.abb[input$sel_months[1]]
     m2 <- month.abb[input$sel_months[2]]
-    p(class = "small text-muted mt-n2", paste(m1, "→", m2))
+    shiny::p(class = "small text-muted mt-n2", paste(m1, "→", m2))
   })
 
   filtered <- reactive({
@@ -184,13 +183,13 @@ server <- function(input, output, session) {
 
   output$obs_summary <- renderUI({
     d <- filtered()
-    tagList(
-      div(class = "d-flex justify-content-between small",
-          span("Observations:"), strong(format(nrow(d), big.mark = ","))),
-      div(class = "d-flex justify-content-between small mt-1",
-          span("Species:"), strong(n_distinct(d$scientific_name))),
-      div(class = "d-flex justify-content-between small mt-1",
-          span("Observers:"), strong("research-grade"))
+    shiny::tagList(
+      shiny::div(class = "d-flex justify-content-between small",
+          shiny::span("Observations:"), shiny::strong(format(nrow(d), big.mark = ","))),
+      shiny::div(class = "d-flex justify-content-between small mt-1",
+          shiny::span("Species:"), shiny::strong(n_distinct(d$scientific_name))),
+      shiny::div(class = "d-flex justify-content-between small mt-1",
+          shiny::span("Observers:"), shiny::strong("research-grade"))
     )
   })
 
@@ -201,43 +200,31 @@ server <- function(input, output, session) {
       setView(lng = -84, lat = 48, zoom = 5)
   })
 
-  # Update heatmap
+  # Occurrence markers, colour-coded by taxa group (with legend)
   observe({
     d <- filtered()
-    leafletProxy("hotspot_map") |> clearGroup("pts")
+    m <- leafletProxy("hotspot_map") |> clearGroup("pts") |> clearControls()
 
     if (nrow(d) == 0) return()
 
-    if (nrow(d) > 500) {
-      leafletProxy("hotspot_map") |>
-        addHeatmap(
-          data      = d,
-          group     = "pts",
-          lat       = ~lat,
-          lng       = ~lon,
-          radius    = 10,
-          blur      = 15,
-          max       = 0.04,
-          gradient  = c("0" = "#ccfbf1", "0.5" = "#14b8a6", "1" = "#0f766e")
-        )
-    } else {
-      sp_pal <- colorFactor(palette = unname(taxa_colors), domain = taxa_names)
-      leafletProxy("hotspot_map") |>
-        addCircleMarkers(
-          data        = d,
-          group       = "pts",
-          lat         = ~lat, lng = ~lon,
-          radius      = 5,
-          fillColor   = ~sp_pal(taxa_group),
-          fillOpacity = 0.75,
-          color       = "#fff",
-          weight      = 0.8,
-          popup = ~paste0("<b>", common_name, "</b><br>",
-                          "<i>", scientific_name, "</i><br>",
-                          taxa_group, " &nbsp;|&nbsp; ",
-                          format(observed_on, "%b %d"))
-        )
-    }
+    sp_pal <- colorFactor(palette = unname(taxa_colors), domain = taxa_names)
+    m |>
+      addCircleMarkers(
+        data        = d,
+        group       = "pts",
+        lat         = ~lat, lng = ~lon,
+        radius      = 4,
+        fillColor   = ~sp_pal(taxa_group),
+        fillOpacity = 0.7,
+        color       = "#fff",
+        weight      = 0.5,
+        popup = ~paste0("<b>", common_name, "</b><br>",
+                        "<i>", scientific_name, "</i><br>",
+                        taxa_group, " &nbsp;|&nbsp; ",
+                        format(observed_on, "%b %d"))
+      ) |>
+      addLegend("bottomright", pal = sp_pal, values = taxa_names,
+                title = "Taxa", opacity = 0.9)
   })
 
   # Phenology: smoothed density by DOY
