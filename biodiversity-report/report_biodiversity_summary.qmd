@@ -117,14 +117,17 @@ The compiled dataset contains **`r comma(n_records)` records** across
 
 ```{r species-table}
 occ |>
-  group_by(Species = species) |>
+  group_by(species) |>
   summarise(Records = n(),
             `First record` = min(year),
             `Most recent`  = max(year),
             .groups = "drop") |>
   arrange(desc(Records)) |>
-  datatable(rownames = FALSE, options = list(dom = "tp", pageLength = 10),
-            caption = "Records per focal species.")
+  mutate(Species = paste0("<em>", species, "</em>")) |>
+  select(Species, Records, `First record`, `Most recent`) |>
+  datatable(rownames = FALSE, escape = FALSE,
+            options = list(dom = "tp", pageLength = 10),
+            caption = "Records per focal species (scientific names italicised).")
 ```
 
 ## Spatial distribution {#sec-map}
@@ -135,7 +138,7 @@ leaflet(occ) |>
   addProviderTiles(providers$CartoDB.Positron) |>
   addCircleMarkers(~lon, ~lat, radius = 3, stroke = FALSE, fillOpacity = 0.6,
                    color = ~pal(species),
-                   popup = ~paste0("<b>", species, "</b><br>", year)) |>
+                   popup = ~paste0("<em>", species, "</em><br>", year)) |>
   addLegend("bottomright", pal = pal, values = ~species, title = "Species",
             opacity = 0.9)
 ```
