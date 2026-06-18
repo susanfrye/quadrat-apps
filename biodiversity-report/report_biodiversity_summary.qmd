@@ -1,0 +1,183 @@
+---
+title: "Biodiversity Monitoring Summary"
+subtitle: "A reproducible reporting template — Quadrat Studio"
+author: "Susan Frye · Quadrat Studio"
+date: today
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-location: left
+    number-sections: true
+    fig-width: 8
+    fig-height: 4.5
+    code-fold: true
+    embed-resources: true
+    include-in-header:
+      text: |
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+        <style>
+          body { font-family: 'Inter', sans-serif; }
+          h1, h2, h3, h4, .title, .subtitle { font-family: 'Space Grotesk', sans-serif; letter-spacing: -0.02em; }
+          a { color: #0d9488; }
+          #title-block-header .quarto-title-banner { background: #0a0a0a; }
+        </style>
+params:
+  region: "Ontario"
+  year_start: 2000
+  year_end: 2024
+  taxa:
+    - "Danaus plexippus"
+    - "Bombus affinis"
+    - "Bombus terricola"
+    - "Dolichonyx oryzivorus"
+    - "Emydoidea blandingii"
+execute:
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| include: false
+# SETUP (run once): install.packages(c("rgbif","dplyr","ggplot2","leaflet","knitr","DT","scales"))
+library(rgbif)
+library(dplyr)
+library(ggplot2)
+library(leaflet)
+library(knitr)
+library(DT)
+library(scales)
+
+# ── Download & cache ────────────────────────────────────────────────────────
+# This report is fully reproducible: rendering it re-pulls (or re-uses a cache
+# of) public GBIF records, so the same code produces the same document months
+# later. Swap `params$taxa` / region for a different study and re-render.
+cache_file <- "cache_report_gbif.rds"
+
+if (!file.exists(cache_file)) {
+  raw <- lapply(params$taxa, function(sci) {
+    tryCatch({
+      res <- occ_search(
+        scientificName = sci,
+        country        = "CA",
+        stateProvince  = params$region,
+        year           = paste0(params$year_start, ",", params$year_end),
+        limit          = 1000,
+        hasCoordinate  = TRUE,
+        fields         = c("decimalLatitude", "decimalLongitude",
+                           "year", "month", "species")
+      )$data
+      if (!is.null(res) && nrow(res) > 0) res$query_sci <- sci
+      res
+    }, error = function(e) NULL)
+  })
+  occ <- bind_rows(Filter(Negate(is.null), raw)) |>
+    filter(!is.na(decimalLatitude), !is.na(decimalLongitude), !is.na(year)) |>
+    rename(lat = decimalLatitude, lon = decimalLongitude) |>
+    mutate(species = ifelse(is.na(species), query_sci, species),
+           decade  = paste0(floor(year / 10) * 10, "s"))
+  saveRDS(occ, cache_file)
+}
+occ <- readRDS(cache_file)
+
+teal <- "#0d9488"
+```
+
+## Scope and purpose {#sec-scope}
+
+This template demonstrates the kind of **defensible, reproducible reporting**
+Quadrat Studio delivers to conservation authorities, municipalities, and
+environmental consultants. It summarises publicly available occurrence records
+for a set of focal species in **`r params$region`** over
+**`r params$year_start`–`r params$year_end`**, drawn from
+[GBIF.org](https://www.gbif.org).
+
+Everything below is generated from code: the figures, tables, and numbers update
+automatically when the underlying data or parameters change. For a real
+engagement, the same machinery runs on *your* monitoring data and produces a
+branded report ready for a regulator or board.
+
+::: callout-note
+**This is an illustrative template using open data.** Occurrence records reflect
+sampling effort as much as true distribution; absence of records is not evidence
+of absence. A project report would document data provenance, QA/QC, and analysis
+assumptions in full.
+:::
+
+## Data summary {#sec-summary}
+
+```{r overview}
+n_records <- nrow(occ)
+n_species <- length(unique(occ$species))
+yr_span   <- paste0(min(occ$year), "–", max(occ$year))
+```
+
+The compiled dataset contains **`r comma(n_records)` records** across
+**`r n_species` species**, spanning **`r yr_span`**.
+
+```{r species-table}
+occ |>
+  group_by(Species = species) |>
+  summarise(Records = n(),
+            `First record` = min(year),
+            `Most recent`  = max(year),
+            .groups = "drop") |>
+  arrange(desc(Records)) |>
+  datatable(rownames = FALSE, options = list(dom = "tp", pageLength = 10),
+            caption = "Records per focal species.")
+```
+
+## Spatial distribution {#sec-map}
+
+```{r map}
+pal <- colorFactor("viridis", domain = occ$species)
+leaflet(occ) |>
+  addProviderTiles(providers$CartoDB.Positron) |>
+  addCircleMarkers(~lon, ~lat, radius = 3, stroke = FALSE, fillOpacity = 0.6,
+                   color = ~pal(species),
+                   popup = ~paste0("<b>", species, "</b><br>", year)) |>
+  addLegend("bottomright", pal = pal, values = ~species, title = "Species",
+            opacity = 0.9)
+```
+
+## Records through time {#sec-trend}
+
+```{r trend}
+occ |>
+  count(decade) |>
+  ggplot(aes(decade, n)) +
+  geom_col(fill = teal) +
+  labs(x = NULL, y = "Records", title = "Records by decade") +
+  theme_minimal(base_size = 13)
+```
+
+## Seasonal detection (phenology) {#sec-phenology}
+
+```{r phenology}
+occ |>
+  filter(!is.na(month)) |>
+  count(month) |>
+  ggplot(aes(factor(month, levels = 1:12, labels = month.abb), n, group = 1)) +
+  geom_col(fill = teal) +
+  labs(x = NULL, y = "Records", title = "Records by month — when species are detected") +
+  theme_minimal(base_size = 13)
+```
+
+The phenology profile indicates **when** records accumulate through the year —
+directly useful for scheduling field surveys so effort lands in the detection
+window for target species.
+
+## Interpretation & next steps {#sec-next}
+
+- **Survey timing.** Concentrate monitoring effort in the months with peak
+  detections (see @sec-phenology).
+- **Spatial gaps.** Areas with few records (@sec-map) may reflect under-sampling
+  rather than true absence — candidates for targeted survey.
+- **Trend caution.** Apparent changes over time (@sec-trend) are confounded with
+  changes in observer effort; a defensible trend analysis would model effort
+  explicitly.
+
+---
+
+*Prepared with Quadrat Studio · Susan Frye · [quadratstudio.ca](https://quadratstudio.ca).
+Reproducible source: this `.qmd` re-renders from public GBIF data.*

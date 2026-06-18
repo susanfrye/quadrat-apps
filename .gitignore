@@ -1,0 +1,9 @@
+# Local render output (Connect Cloud regenerates these)
+*.html
+report_biodiversity_summary_files/
+
+# R / editor cruft
+.Rproj.user/
+.Rhistory
+rsconnect/
+.DS_Store
