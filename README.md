@@ -12,6 +12,8 @@ re-downloading.
 | `native-bees/` | Ontario bumble bee tracker | `app.R` | GBIF (cached) |
 | `monitoring-power/` | Monitoring-design power tool | `app.R` | none (simulation) |
 | `biodiversity-report/` | Reproducible biodiversity report (Quarto) | `report_biodiversity_summary.qmd` | GBIF (cached) |
+| `bumblebee-decline/` | At-risk bumble bee decline & range-shift dashboard | `app.R` | GBIF (cached) |
+| `bumblebee-decline-report/` | At-risk bumble bee report (Quarto) | `report_bumblebee_decline.qmd` | GBIF (cached) |
 
 ## Deploying / updating
 
